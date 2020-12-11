@@ -271,6 +271,12 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'Volu
 # Disable Shutdown Notification
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability" -force -ea SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability' -Name 'ShutdownReasonOn' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
+
+#Add FsLogix Groups
+Add-LocalGroupMember -Group "FSLogix ODFC Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix Profile Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix ODFC Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix Profile Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
 #endregion
 
 #region
