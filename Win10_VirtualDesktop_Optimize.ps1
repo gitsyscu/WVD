@@ -1,4 +1,4 @@
-﻿<#####################################################################################################################################
+<#####################################################################################################################################
 
     This Sample Code is provided for the purpose of illustration only and is not intended to be used in a production environment.  
     THIS SAMPLE CODE AND ANY RELATED INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
@@ -250,18 +250,17 @@ Set-NetAdapterAdvancedProperty command.
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\FSLogix\Profiles") -ne $true) {  New-Item "HKLM:\SOFTWARE\FSLogix\Profiles" -force -ea SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'Enabled' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'VHDLocations' -Value '\\fslogixwvdcu.file.core.windows.net\logixprofiles' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'DeleteLocalProfileWhenVHDShouldApply' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'DeleteLocalProfileWhenVHDShouldApply' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'FlipFlopProfileDirectoryName' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'VolumeType' -Value 'vhdx' -PropertyType String -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'SizeInMBs' -Value 327680 -PropertyType DWord -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'FoldersToRemove' -Value @("") -PropertyType MultiString -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'SizeInMBs' -Value 50000 -PropertyType DWord -Force -ea SilentlyContinue;
 
 # FsLogix Office Containers
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\FSLogix\ODFC") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\FSLogix\ODFC" -force -ea SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'VHDLocations' -Value @("\\fslogixwvdcu.file.core.windows.net\officecontainers") -PropertyType MultiString -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'Enabled' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'FlipFlopProfileDirectoryName' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
-New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'DeleteLocalProfileWhenVHDShouldApply' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'DeleteLocalProfileWhenVHDShouldApply' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'IncludeOutlook' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'IncludeOutlookPersonalization' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'VolumeType' -Value 'vhdx' -PropertyType String -Force -ea SilentlyContinue;
@@ -272,11 +271,15 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'Volu
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability" -force -ea SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Reliability' -Name 'ShutdownReasonOn' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 
-#Add FsLogix Groups
-Add-LocalGroupMember -Group "FSLogix ODFC Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
-Add-LocalGroupMember -Group "FSLogix Profile Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
-Add-LocalGroupMember -Group "FSLogix ODFC Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
-Add-LocalGroupMember -Group "FSLogix Profile Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
+# Disable Offline Files
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetCache") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetCache" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetCache' -Name 'Enabled' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
+
+# Disable Windows Store
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore' -Name 'RemoveWindowsStore' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore' -Name 'DisableOSUpgrade' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+
 #endregion
 
 #region
