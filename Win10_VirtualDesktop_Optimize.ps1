@@ -264,6 +264,14 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'Dele
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'IncludeOutlook' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'IncludeOutlookPersonalization' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'VolumeType' -Value 'vhdx' -PropertyType String -Force -ea SilentlyContinue;
+
+# FsLogix Authorized Groups
+Add-LocalGroupMember -Group "FSLogix ODFC Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix Profile Exclude List" -Member  "CUOFCO\WVD_Administrators" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix ODFC Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
+Add-LocalGroupMember -Group "FSLogix Profile Include List" -Member  "CUOFCO\WVD_Users" -ErrorAction SilentlyContinue
+Remove-LocalGroupMember -Group "FSLogix ODFC Include List" -Member "\Everyone" -ErrorAction SilentlyContinue
+Remove-LocalGroupMember -Group "FSLogix Profile Include List" -Member "\Everyone" -ErrorAction SilentlyContinue
 #endregion
 
 #region WVD Customization
@@ -279,6 +287,22 @@ New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetCach
 if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -force -ea SilentlyContinue };
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore' -Name 'RemoveWindowsStore' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
 New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore' -Name 'DisableOSUpgrade' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+
+# Disable Drive Redirection
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services' -Name 'fDisableCdm' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+
+# Disable Windows Defender
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender' -Name 'DisableAntiSpyware' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+
+# Disable Windows Defender Notifications
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications' -Name 'DisableNotifications' -Value 1 -PropertyType DWord -Force -ea SilentlyContinue;
+
+# Disable Windows Defender SmartScreen
+if((Test-Path -LiteralPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System") -ne $true) {  New-Item "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -force -ea SilentlyContinue };
+New-ItemProperty -LiteralPath 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableSmartScreen' -Value 0 -PropertyType DWord -Force -ea SilentlyContinue;
 
 #endregion
 
